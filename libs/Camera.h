@@ -22,6 +22,7 @@ public:
     CameraFly(GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat = YAW, GLfloat = PITCH);
     glm::mat4 GetViewMatrix() const;
     GLfloat GetZoom() const;
+    glm::vec3 GetPosition() const;
     void ProcessKeyboard(Movement, float);
     void ProcessMouseMovement(GLfloat, GLfloat, GLboolean = true);
     void ProcessMouseScroll(GLfloat);

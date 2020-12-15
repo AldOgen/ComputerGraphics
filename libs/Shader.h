@@ -1,9 +1,11 @@
 #pragma once
+#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <optional>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -29,7 +31,7 @@ public:
     ShaderPipe();
     std::optional <GLuint> GetShaderPipeID() const;
     void CreateShaderPipe(const std::vector<Shader>&, int);
-    GLint GetLocation(const std::string&);
+    GLint GetLocation(const std::string&) const;
     void UseShaderPipe() const;
     void SetInt(const std::string&, GLint) const;
     void SetFloat(const std::string&, GLfloat) const;
@@ -52,4 +54,4 @@ struct ShaderLoadInfo {
 };
 
 
-ShaderPipe CreateShaderProgram(const std::vector<ShaderLoadInfo> &);
+ShaderPipe CreateShaderProgram(std::vector<ShaderLoadInfo>::const_iterator, std::vector<ShaderLoadInfo>::const_iterator);

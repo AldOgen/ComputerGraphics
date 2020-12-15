@@ -7,6 +7,7 @@ void Shader::DeleteShader() {
     if (shader_id) {
         glDeleteShader(*shader_id);
     }
+    shader_id = std::nullopt;
 }
 
 std::optional <GLuint> Shader::GetShaderID() const {
@@ -32,11 +33,12 @@ void Shader::LoadRealizationShader(const std::string& path_shader_realization, i
     glShaderSource(*shader_id, 1, &shader_source, nullptr);
     glCompileShader(*shader_id);
     int status;
-    std::vector<GLchar> log_info(log_info_size);
+    std::string log_info;
+    log_info.resize(log_info_size);
     glGetShaderiv(*shader_id, GL_COMPILE_STATUS, &status);
     if (!status) {
-        glGetShaderInfoLog(*shader_id, log_info_size, nullptr, &log_info[0]);
-        std::cerr << "ERROR::SHADER::COMPILATION_FAILED\n" << &log_info[0] << std::endl;
+        glGetShaderInfoLog(*shader_id, log_info_size, nullptr, std::data(log_info));
+        std::cerr << "ERROR::SHADER::COMPILATION_FAILED\n" << log_info << std::endl;
     }
 }
 
@@ -58,15 +60,16 @@ void ShaderPipe::CreateShaderPipe(const std::vector<Shader> &shaders, int log_in
     glLinkProgram(*shader_pipe_id);
 
     int status;
-    std::vector<GLchar> log_info(log_info_size);
+    std::string log_info;
+    log_info.resize(log_info_size);
     glGetProgramiv(*shader_pipe_id, GL_LINK_STATUS, &status);
     if (!status) {
-         glGetProgramInfoLog(*shader_pipe_id, 512, nullptr, &log_info[0]);
-         std::cerr << "ERROR::SHADER::LINKING_FAILED\n" << &log_info[0] << std::endl;
+         glGetProgramInfoLog(*shader_pipe_id, 512, nullptr, std::data(log_info));
+         std::cerr << "ERROR::SHADER::LINKING_FAILED\n" << log_info << std::endl;
     }
 }
 
-GLint ShaderPipe::GetLocation(const std::string &name_uniform_var) {
+GLint ShaderPipe::GetLocation(const std::string &name_uniform_var) const {
     return glGetUniformLocation(*shader_pipe_id, name_uniform_var.c_str());
 }
 
@@ -112,17 +115,21 @@ ShaderLoadInfo::ShaderLoadInfo(const std::string &file_shader_path, const GLenum
 
 
 
-ShaderPipe CreateShaderProgram(const std::vector<ShaderLoadInfo> &shareds_info) {
+ShaderPipe CreateShaderProgram(std::vector<ShaderLoadInfo>::const_iterator info_begin,
+                               std::vector<ShaderLoadInfo>::const_iterator info_end) {
     std::vector<Shader> shaders;
-    for (const auto &shared_info : shareds_info) {
-        Shader shader(shared_info.type_shader);
-        shader.LoadRealizationShader(shared_info.file_shader_path);
-        shaders.push_back(shader);
-    }
+    std::for_each(info_begin, 
+                  info_end, 
+                  [&shaders](const auto& shader_info) {
+                      Shader shader(shader_info.type_shader);
+                      shader.LoadRealizationShader(shader_info.file_shader_path);
+                      shaders.push_back(shader); 
+                  });
+
     ShaderPipe shader_program;
     shader_program.CreateShaderPipe(shaders);
-    for (auto &shader : shaders) {
-        shader.DeleteShader();
-    }
+
+    std::for_each(shaders.begin(), shaders.end(), [](auto &shader) { shader.DeleteShader(); });
+
     return shader_program;
 }

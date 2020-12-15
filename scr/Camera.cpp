@@ -19,6 +19,10 @@ GLfloat CameraFly::GetZoom() const {
     return zoom;
 }
 
+glm::vec3 CameraFly::GetPosition() const {
+    return position;
+}
+
 void CameraFly::ProcessKeyboard(Movement direction, float deltaTime) {
     GLfloat velocity = SPEED * deltaTime;
     switch (direction) {

@@ -1,12 +1,27 @@
 #include "../libs/Texture.h"
 
 
-Texture2D::Texture2D() = default;
+std::optional<GLuint> Texture::GetTextureID() const {
+    return texture_id;
+}
 
-void Texture2D::LoadTexture(const std::string& texture_file_path) {
+std::optional <std::string> Texture::GetType() const {
+    return type;
+}
+
+
+void Texture2D::LoadTexture(const std::string& texture_file_path, const std::string& type_texture, bool flg_png) {
+    if (type_texture != DIFFUSE_TEXTURE && type_texture != SPECULAR_TEXTURE) {
+        std::cerr << "ERROR::TEXTURE::UNKNOWN_TEXTURE_TYPE" << std::endl;
+        return;
+    }
+
     GLuint tmp_texture_id;
     glGenTextures(1, &tmp_texture_id);
+
     texture_id = tmp_texture_id;
+    type = type_texture;
+
     glBindTexture(GL_TEXTURE_2D, *texture_id); 
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -19,20 +34,21 @@ void Texture2D::LoadTexture(const std::string& texture_file_path) {
     GLboolean *texture = stbi_load(texture_file_path.c_str(), &width, &height, &nr_channels, 0);
 
     if (texture) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
-        glGenerateMipmap(GL_TEXTURE_2D);
+        if (flg_png) {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        } else {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
     } else {
-        std::cerr << "Failed to load texture" << std::endl;
+        std::cerr << "ERROR::TEXTURE::TEXTURE_LOADING_FAILED" << std::endl;
     }
 
     stbi_image_free(texture);
 }
 
-std::optional<GLuint> Texture2D::GetTextureID() const {
-    return texture_id;
-}
-
-void Texture2D::UseTexture(GLuint idx) const {
+void Texture2D::UseTexture(GLuint idx) const  {
     glActiveTexture(GL_TEXTURE0 + idx);
     glBindTexture(GL_TEXTURE_2D, *texture_id);
 }

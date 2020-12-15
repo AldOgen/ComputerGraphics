@@ -121,12 +121,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32sd.lib;glfw3dll.lib;opengl32.lib;glad.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32sd.lib;glfw3dll.lib;opengl32.lib;glad.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,12 +149,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scr\Camera.cpp" />
+    <ClCompile Include="scr\Model.cpp" />
     <ClCompile Include="scr\Shader.cpp" />
     <ClCompile Include="scr\stb_image.cpp" />
     <ClCompile Include="scr\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\Camera.h" />
+    <ClInclude Include="libs\Model.h" />
     <ClInclude Include="libs\Shader.h" />
     <ClInclude Include="libs\stb_image.h" />
     <ClInclude Include="libs\Texture.h" />

@@ -147,16 +147,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="libs\Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scr\Camera.cpp" />
     <ClCompile Include="scr\Model.cpp" />
+    <ClCompile Include="scr\Scene.cpp" />
     <ClCompile Include="scr\Shader.cpp" />
     <ClCompile Include="scr\stb_image.cpp" />
     <ClCompile Include="scr\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs\Camera.h" />
+    <ClInclude Include="libs\Light.h" />
     <ClInclude Include="libs\Model.h" />
+    <ClInclude Include="libs\Scene.h" />
     <ClInclude Include="libs\Shader.h" />
     <ClInclude Include="libs\stb_image.h" />
     <ClInclude Include="libs\Texture.h" />

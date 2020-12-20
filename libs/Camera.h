@@ -36,7 +36,7 @@ private:
     static constexpr glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
     static constexpr glm::vec3 FRONT = glm::vec3(0.0f, 0.0f, -1.0f);
 
-    static constexpr GLfloat SPEED = 0.005f;
+    static constexpr GLfloat SPEED = 2.0f;
     static constexpr GLfloat SENSITIVITY = 0.1f;
     static constexpr GLfloat ZOOM = 45.0f;
     static constexpr GLfloat ZOOM_MAX_BORDER = 45.0f;

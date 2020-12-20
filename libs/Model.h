@@ -19,6 +19,8 @@ struct Vertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 texture_position;
+    glm::vec3 tangent;
+    glm::vec3 bitangent;
 };
 
 Vertex CreateVertex(glm::vec3, glm::vec3, glm::vec2);
@@ -32,20 +34,24 @@ public:
 public:
     Mesh(const std::vector<Vertex>&, 
          const std::vector<GLuint>&,
-         const std::vector<Texture2D>&);
+         const std::vector<Texture2D>&, 
+         bool = true);
     void InitializeMesh();
     void DrawMesh(const ShaderPipe &);
+    bool IsVolume() const;
 
 public:
     std::vector<Vertex> vertexes;
     std::vector<GLuint> indexes;
     std::vector<Texture2D> textures;
+    bool volume;
 
     GLuint VAO = 0, VBO = 0, IBO = 0;
 };
 
 template <typename Type>
 static size_t SizeofContainer(const std::vector<Type>&);
+
 
 
 class FigurePosition {
@@ -66,62 +72,10 @@ private:
 };
 
 
-class LightPoint {
-public:
-    static constexpr std::string_view LIGHT = "light_point";
-
-public:
-    LightPoint(glm::vec3, glm::vec3, glm::vec3, glm::vec3, GLfloat, GLfloat, GLfloat);
-    void UseLight(const ShaderPipe&, int) const;
-
-private:
-    static constexpr std::string_view POSITION = "position";
-    static constexpr std::string_view AMBIDENT = "ambient";
-    static constexpr std::string_view DIFFUSE = "diffuse";
-    static constexpr std::string_view SPECULAR = "specular";
-    static constexpr std::string_view ATTENUATION_CONST = "attenuation_const";
-    static constexpr std::string_view ATTENUATION_LIN = "attenuation_lin";
-    static constexpr std::string_view ATTENUATION_QUAD = "attenuation_quad";
-
-private:
-    glm::vec3 position;
-
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-
-    GLfloat attenuation_const;
-    GLfloat attenuation_lin;
-    GLfloat attenuation_quad;
-};
-
-
-class LightDirected {
-public:
-    static constexpr std::string_view LIGHT = "light_directed";
-
-public:
-    LightDirected(glm::vec3, glm::vec3, glm::vec3, glm::vec3);
-    void UseLight(const ShaderPipe&, int) const;
-
-private:
-    static constexpr std::string_view DIRECTION = "direction";
-    static constexpr std::string_view AMBIDENT = "ambient";
-    static constexpr std::string_view DIFFUSE = "diffuse";
-    static constexpr std::string_view SPECULAR = "specular";
-
-private:
-    glm::vec3 direction;
-
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-};
-
 
 struct Transform {
 public:
-    Transform(glm::vec3 = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 = glm::vec3(1.0f, 1.0f, 1.0f), GLfloat = 0.0f);
+    Transform(glm::vec3 = glm::vec3(0.0f), glm::vec3 = glm::vec3(1.0f), GLfloat = 0.0f);
 
 public:
     glm::vec3 translate;

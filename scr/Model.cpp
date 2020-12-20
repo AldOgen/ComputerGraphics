@@ -4,10 +4,12 @@
 //template<typename TextureType>
 Mesh::Mesh(const std::vector<Vertex>& vertexes,
            const std::vector<GLuint>& indexes,
-           const std::vector<Texture2D>& textures)
+           const std::vector<Texture2D>& textures,
+           bool volume)
     : vertexes(vertexes.begin(), vertexes.end()),
       indexes(indexes.begin(), indexes.end()),
-      textures(textures.begin(), textures.end()) {}
+      textures(textures.begin(), textures.end()),
+      volume(volume) {}
 
 //template<typename TextureType>
 void Mesh::InitializeMesh() {
@@ -32,6 +34,12 @@ void Mesh::InitializeMesh() {
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, texture_position)));
 
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
+
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
+
     glBindVertexArray(0);
 }
 
@@ -39,17 +47,24 @@ void Mesh::InitializeMesh() {
 void Mesh::DrawMesh(const ShaderPipe &shader_program) {
     int cnt_diffuse = 0;
     int cnt_specular = 0;
+    int cnt_normal = 0;
+    int cnt_depth = 0;
 
     for (size_t idx = 0; idx < textures.size(); ++idx) {
         std::stringstream name_texture;
 
-        if (textures[idx].GetType() == Texture2D::DIFFUSE_TEXTURE) {
-            name_texture << Texture2D::DIFFUSE_TEXTURE << cnt_diffuse++;
+        if (textures[idx].GetType() == Texture2D::DIFFUSE_MAP) {
+            name_texture << Texture2D::DIFFUSE_MAP << "[" << cnt_diffuse++ << "]";
+        } else if (textures[idx].GetType() == Texture2D::SPECULAR_MAP) {
+            name_texture << Texture2D::SPECULAR_MAP << "[" << cnt_specular++ << "]";
+        } else if (textures[idx].GetType() == Texture2D::NORMAL_MAP) {
+            name_texture << Texture2D::NORMAL_MAP << "[" << cnt_normal++ << "]";
         } else {
-            name_texture << Texture2D::SPECULAR_TEXTURE << cnt_specular++;
+            name_texture << Texture2D::DEPTH_MAP << "[" << cnt_depth++ << "]";
         }
+
         textures[idx].UseTexture(shader_program, name_texture.str(), idx);
-        name_texture << Texture::TEXTURE;
+        name_texture << "." << Texture::TEXTURE;
         shader_program.SetInt(name_texture.str(), idx);
     }
 
@@ -59,6 +74,10 @@ void Mesh::DrawMesh(const ShaderPipe &shader_program) {
     glBindVertexArray(0);
 
     glActiveTexture(GL_TEXTURE0);
+}
+
+bool Mesh::IsVolume() const {
+    return volume;
 }
 
 
@@ -85,41 +104,11 @@ Vertex CreateVertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texture_posi
     Vertex vertex;
     vertex.position = position;
     vertex.normal = normal;
-    vertex.texture_position =  texture_position;
+    vertex.texture_position = texture_position;
+    //vertex.tangent = tangent;
+    //vertex.bitangent = bitangent;
+
     return vertex;
-}
-
-LightPoint::LightPoint(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
-             GLfloat attenuation_const, GLfloat attenuation_lin, GLfloat attenuation_quad) 
-    : position(position), ambient(ambient), diffuse(diffuse), specular(specular), 
-      attenuation_const(attenuation_const), attenuation_lin(attenuation_lin), attenuation_quad(attenuation_quad) {}
-
-void LightPoint::UseLight(const ShaderPipe &shader_program, int idx) const {
-    std::stringstream name;
-    name << LIGHT << idx << ".";
-    shader_program.SetVec3(name.str() + std::string(POSITION), position);
-
-    shader_program.SetVec3(name.str() + std::string(AMBIDENT), ambient);
-    shader_program.SetVec3(name.str() + std::string(DIFFUSE), diffuse);
-    shader_program.SetVec3(name.str() + std::string(SPECULAR), specular);
-
-    shader_program.SetFloat(name.str() + std::string(ATTENUATION_CONST), attenuation_const);
-    shader_program.SetFloat(name.str() + std::string(ATTENUATION_LIN), attenuation_lin);
-    shader_program.SetFloat(name.str() + std::string(ATTENUATION_QUAD), attenuation_quad);
-}
-
-
-LightDirected::LightDirected(glm::vec3 direction, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) 
-    : direction(direction), ambient(ambient), diffuse(diffuse), specular(specular) {}
-
-void LightDirected::UseLight(const ShaderPipe& shader_program, int idx) const {
-    std::stringstream name;
-    name << LIGHT << idx << ".";
-    shader_program.SetVec3(name.str() + std::string(DIRECTION), direction);
-
-    shader_program.SetVec3(name.str() + std::string(AMBIDENT), ambient);
-    shader_program.SetVec3(name.str() + std::string(DIFFUSE), diffuse);
-    shader_program.SetVec3(name.str() + std::string(SPECULAR), specular);
 }
 
 

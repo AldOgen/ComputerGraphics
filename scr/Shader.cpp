@@ -78,6 +78,7 @@ void ShaderPipe::UseShaderPipe() const {
 }
 
 void ShaderPipe::SetInt(const std::string& var_key, GLint var_val) const {
+    auto a = glGetUniformLocation(*shader_pipe_id, var_key.c_str());
     glUniform1i(glGetUniformLocation(*shader_pipe_id, var_key.c_str()), var_val);
 }
 

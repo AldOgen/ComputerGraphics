@@ -23,10 +23,7 @@ struct Vertex {
     glm::vec3 bitangent;
 };
 
-Vertex CreateVertex(glm::vec3, glm::vec3, glm::vec2);
 
-
-//template<typename TextureType> 
 class Mesh {
 public:
     static constexpr std::string_view MATERIAL = "material";

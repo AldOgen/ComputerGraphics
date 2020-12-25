@@ -30,14 +30,15 @@ public:
 class Texture {
 public:
     static constexpr std::string_view TEXTURE = "texture_data";
+    static constexpr std::string_view CUBE_MAP_DATA = "cube_map_data";
 
 public:
     virtual ~Texture() {}
-    virtual void LoadTexture(const std::string&, const std::string&, bool) = 0;
+    virtual void LoadTexture(const std::vector<std::string>&, const std::string&, bool) {};
     std::optional<GLuint> GetTextureID() const;
     std::optional <std::string> GetType() const;
     void SetTextureParametrs(const TextureParametrs&);
-    virtual void UseTexture(const ShaderPipe&, const std::string, GLuint) const = 0;
+    virtual void UseTexture(const ShaderPipe&, const std::string, GLuint) const {};
 
 protected:
     std::optional <TextureParametrs> texture_params;
@@ -59,7 +60,7 @@ public:
 
 public:
     Texture2D() = default;
-    void LoadTexture(const std::string&, const std::string&, bool = false) override;
+    void LoadTexture(const std::vector<std::string>&, const std::string&, bool = false) override;
     void GenShadowTexture(GLuint, GLuint);
     void UseTexture(const ShaderPipe& shader_program, const std::string, GLuint) const override;
 };
@@ -75,11 +76,11 @@ public:
     friend void BindShadowCubeTexture(const TextureCube&, GLuint);
 
 public:
-    static constexpr std::string_view CUBE_MAP_DATA = "cube_map_data";
+    static constexpr std::string_view SKYBOX_MAP = "skybox_map";
     static constexpr std::string_view SHADOW_CUBE_MAP = "shadow_cube_map";
 
 public:
-    void LoadTexture(const std::string&, const std::string&, bool) override;
+    void LoadTexture(const std::vector<std::string>&, const std::string&, bool = false) override;
     void GenShadowTexture(GLuint, GLuint);
     void UseTextureForShadowRendering() const;
     void UseTexture(const ShaderPipe&, const std::string, GLuint) const;

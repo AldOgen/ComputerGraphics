@@ -39,7 +39,7 @@ void CameraFly::ProcessKeyboard(Movement direction, float deltaTime) {
         position += right * velocity;
         break;
     default:
-        std::cerr << "Undefined movement value" << std::endl;
+        std::cerr << "ERROR::CAMERAFLY::UNDEFINED_MOVEMENT_VALUE" << std::endl;
         break;
     }
 }

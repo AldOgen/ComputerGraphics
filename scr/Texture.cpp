@@ -17,7 +17,7 @@ void Texture::SetTextureParametrs(const TextureParametrs& new_texture_params) {
 }
 
 
-void Texture2D::LoadTexture(const std::string& texture_file_path, const std::string& type_texture, bool alpha) {
+void Texture2D::LoadTexture(const std::vector<std::string>& textures_file_path, const std::string& type_texture, bool alpha) {
     if (type_texture != DIFFUSE_MAP && type_texture != SPECULAR_MAP && 
         type_texture != NORMAL_MAP && type_texture != DEPTH_MAP) {
         std::cerr << "ERROR::TEXTURE::UNKNOWN_TEXTURE_TYPE" << std::endl;
@@ -39,7 +39,7 @@ void Texture2D::LoadTexture(const std::string& texture_file_path, const std::str
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     GLint width, height, nr_channels;
-    GLboolean *texture = stbi_load(texture_file_path.c_str(), &width, &height, &nr_channels, 0);
+    GLboolean *texture = stbi_load(textures_file_path[0].c_str(), &width, &height, &nr_channels, 0);
 
     if (texture) {
         if (alpha) {
@@ -105,7 +105,36 @@ void BindShadowTexture(const Texture2D& shadow_texture, GLuint FBO_id) {
 }
 
 
-void TextureCube::LoadTexture(const std::string&, const std::string&, bool) {};
+void TextureCube::LoadTexture(const std::vector<std::string>& textures_file_path, const std::string& type_texture, bool alpha) {
+    GLuint tmp_textue_id;
+    glGenTextures(1, &tmp_textue_id);
+
+    texture_id = tmp_textue_id;
+    type = type_texture;
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, *texture_id);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    GLint width, height, nr_channels;
+    for (size_t idx = 0; idx < 6; ++idx) {
+        GLboolean *texture = stbi_load(textures_file_path[idx].c_str(), &width, &height, &nr_channels, 0);
+
+        if (texture) {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + idx, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        } else {
+            std::cerr << "ERROR::TEXTURE::TEXTURE_LOADING_FAILED" << std::endl;
+        }
+
+        stbi_image_free(texture);
+    }
+}
 
 void TextureCube::UseTextureForShadowRendering() const {
     glActiveTexture(GL_TEXTURE0);

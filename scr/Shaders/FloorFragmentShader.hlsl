@@ -2,7 +2,7 @@
 out vec4 FragColor;
 
 
-in FigureParam{
+in FigureParam {
     vec3 FragPos;
     mat3 TBNMatrix;
     vec3 Normal;
@@ -156,6 +156,7 @@ vec3 PhongLuminousFluxPoint(Texture diffuse_map, Texture specular_map, vec2 TexC
 
     return attenuation * (ambient + (1.0f - shadow) * (diffuse + specular));
 }
+
 
 
 vec2 ParallaxMaping(vec2 tex_coords, Texture depth_map) {

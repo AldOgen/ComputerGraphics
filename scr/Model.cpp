@@ -1,7 +1,6 @@
 #include "../libs/Model.h"
 
 
-//template<typename TextureType>
 Mesh::Mesh(const std::vector<Vertex>& vertexes,
            const std::vector<GLuint>& indexes,
            const std::vector<Texture2D>& textures,
@@ -11,7 +10,6 @@ Mesh::Mesh(const std::vector<Vertex>& vertexes,
       textures(textures.begin(), textures.end()),
       volume(volume) {}
 
-//template<typename TextureType>
 void Mesh::InitializeMesh() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -43,7 +41,6 @@ void Mesh::InitializeMesh() {
     glBindVertexArray(0);
 }
 
-//template<typename TextureType>
 void Mesh::DrawMesh(const ShaderPipe &shader_program) {
     int cnt_diffuse = 0;
     int cnt_specular = 0;
@@ -70,7 +67,6 @@ void Mesh::DrawMesh(const ShaderPipe &shader_program) {
 
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, vertexes.size());
-    //glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     glActiveTexture(GL_TEXTURE0);
@@ -97,18 +93,6 @@ void FigurePosition::UseFigurePosition(const ShaderPipe& shader_program) const {
     shader_program.SetMat4(name.str() + std::string(MODEL), model);
     shader_program.SetMat4(name.str() + std::string(VIEW), view);
     shader_program.SetMat4(name.str() + std::string(PROJECTION), projection);
-}
-
-
-Vertex CreateVertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texture_position) {
-    Vertex vertex;
-    vertex.position = position;
-    vertex.normal = normal;
-    vertex.texture_position = texture_position;
-    //vertex.tangent = tangent;
-    //vertex.bitangent = bitangent;
-
-    return vertex;
 }
 
 

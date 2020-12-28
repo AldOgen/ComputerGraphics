@@ -1,0 +1,2 @@
+C:\Users\Admin\Desktop\ComputerGraphics\x64\Debug\ComputerGraphics.exe
+C:\Users\Admin\Desktop\ComputerGraphics\x64\Debug\ComputerGraphics.pdb

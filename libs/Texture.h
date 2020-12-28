@@ -41,8 +41,8 @@ public:
     virtual void UseTexture(const ShaderPipe&, const std::string, GLuint) const {};
 
 protected:
-    std::optional <TextureParametrs> texture_params;
-    std::optional <std::string> type;
+    std::optional<TextureParametrs> texture_params;
+    std::optional<std::string> type;
     std::optional<GLuint> texture_id;
 };
 

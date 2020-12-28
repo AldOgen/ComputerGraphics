@@ -190,18 +190,6 @@ int main(int argc, char **argv) {
 	textures_floor.push_back(texture);
 
 
-	TextureCube cube_texture;
-
-	//std::vector<TextureCube> textures_skybox;
-	//cube_texture.LoadTexture({ "./textures/Skybox/right.jpg",
-	//						   "./textures/Skybox/left.jpg",
-	//						   "./textures/Skybox/top.jpg",
-	//						   "./textures/Skybox/bottom.jpg",
-	//						   "./textures/Skybox/front.jpg",
-	//						   "./textures/Skybox/back.jpg" }, std::string(TextureCube::SKYBOX_MAP));
-	//textures_skybox.push_back();
-
-
 	// Создаем объекты графических примитивов
 
 	Mesh plastic_cube{ creater_cube.CreateObject(), indexes_vertex_coords_cube, texture_cube };
@@ -212,8 +200,6 @@ int main(int argc, char **argv) {
 
 	Mesh column{ creater_column.CreateObject(), indexes_vertex_coords_cube, textures_column };
 	column.InitializeMesh();
-
-	//Mesh skybox { vertexes_cube, indexes_vertex_coords_cube,  };
 
 	Mesh floor{ creater_floor.CreateObject(), indexes_vertex_coords_floor, textures_floor, false };
 	floor.InitializeMesh();
@@ -229,7 +215,6 @@ int main(int argc, char **argv) {
 	meshs_scene.push_back(plastic_cube);
 	meshs_scene.push_back(column);
 	meshs_scene.push_back(column);
-	//meshs_scene.push_back(column);
 	meshs_scene.push_back(column);
 	meshs_scene.push_back(floor);
 	meshs_scene.push_back(light);
@@ -272,15 +257,11 @@ int main(int argc, char **argv) {
 	std::vector<ShaderLoadInfo> shareds_shadow_info = { {"./scr/Shaders/ShadowVertexShader.hlsl", GL_VERTEX_SHADER},
 														{"./scr/Shaders/ShadowFragmentShader.hlsl", GL_FRAGMENT_SHADER} };
 
-	std::vector<ShaderLoadInfo> shareds_shadow_cube_info = { {"./scr/Shaders/ShadowVertexShader.hlsl", GL_VERTEX_SHADER},
-															 {"./scr/Shaders/ShadowCubeGeometryShader.hlsl", GL_GEOMETRY_SHADER},
-															 {"./scr/Shaders/ShadowCubeFragmentShader.hlsl", GL_FRAGMENT_SHADER} };
 
 	ShaderPipe shader_shadow_program = CreateShaderProgram(shareds_shadow_info.begin(), shareds_shadow_info.end());
-	ShaderPipe shader_shadow_cube_program = CreateShaderProgram(shareds_shadow_cube_info.begin(), shareds_shadow_cube_info.end());
 
 	std::vector<ShaderPipe> shaders_shadow{ shader_shadow_program };
-	std::vector<ShaderPipe> shaders_shadow_cube{ shader_shadow_cube_program };
+	std::vector<ShaderPipe> shaders_shadow_cube{ };
 
 
 	// Создаем текстуру для карт глубины и связываем ее с соответсвующем фреймбуфером
